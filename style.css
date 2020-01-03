@@ -1,0 +1,73 @@
+/*Gradients can't be transitioned.  They switch from one state to the other instantly, not as an animation.  The way to get around, if needed, not in the case here, is to use two elements,each with their own gradient, and transition their opacities.
+
+Another problem here is that when sliding off, the linear-gradient in the background of the after element doesn't transition slowly into off; it turns off immediately.  However the box-shadow is animated and light persists longer around the edges of after.  To fix this, instead of using transition to animate everything, real animations with names would have to be programmeed because then I'd be able to turn off the light around the edges of after immediately too.  The lagging effect is hardly seen if the slider is fast.  However, increasing its time to 10s for example, makes it painfully obvious.
+
+Another problem is that -webkit-appearance is unstable, deprecated, and shouldn't be used.  The workout would be to just create the 3 elements of the slider: the sliding hole, the sliding piece, and the glass on top of the sliding piece out of a div and it's before and after contents.  Then use javascript.  It's not css only, but it's stable.*/
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #292929;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+input[type="checkbox"] {
+  position: relative;
+  width: 480px;
+  height: 160px;
+  -webkit-appearance: none;
+  background: linear-gradient(0deg, #333, black);
+  outline: none;
+  border-radius: 80px;
+  box-shadow: 0 0 0 16px #353535, 0 0 0 20px #3e3e3e, inset 0 0 40px black,
+    0 20px 80px rgba(0, 0, 0, 0.5), inset 0 0 60px rgba(0, 0, 0, 0.2);
+}
+
+input:checked[type="checkbox"] {
+    background: linear-gradient(0deg, #6dd1ff, #20b7ff);
+    box-shadow: 0 0 8px #6dd1ff, 0 0 0 16px #353535, 0 0 0 20px #3e3e3e, inset 0 0 40px black,
+    0 20px 80px rgba(0, 0, 0, 0.5), inset 0 0 60px rgba(0, 0, 0, 0.2);
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 320px;
+  height: 160px;
+  background: linear-gradient(0deg, black, #6b6b6b);
+  border-radius: 80px;
+  box-shadow: 0 0 0 4px #232323;
+  transform: scale(0.98, 0.98);
+  transition: 0.3s;
+}
+
+input:checked[type="checkbox"]::before {
+    left: 160px;/*trial and error*/
+}
+
+input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    left: 240px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(0deg, #6b6b6b, black);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px #232323;
+    transform: translate(0, -50%);
+    transition: 0.3s;
+  }
+  
+  input:checked[type="checkbox"]::after {
+      left: 400px;
+      background: linear-gradient(0deg, #63cdff, #63cdff);
+      box-shadow: 0 0 20px #13b3ff, 0 0 60px #13b3ff;
+  }
